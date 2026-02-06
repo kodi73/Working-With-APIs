@@ -11,10 +11,11 @@
         const image = document.querySelector('img');
         fetch('https://api.giphy.com/v1/gifs/translate?api_key=ZCzgopRLeuCuyIA7mA91L85ybP4Z1uSn&s=cats')
         .then(function(response) {
-            console.log(response.json());
-        }).then(function(response) {
-            console.log(response.data.images.original.url);
-        }) 
+            return response.json();
+        })
+        .then(function(response) {
+            image.src = response.data.images.original.url;
+        });
     </script>
     
 </body>
