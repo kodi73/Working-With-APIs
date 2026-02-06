@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API is gonna work for me!</title>
+</head>
+<body>
+    <img src="#" alt="My giphs">
+    <script>
+        const image = document.querySelector('img');
+        fetch('https://api.giphy.com/v1/gifs/translate?api_key=ZCzgopRLeuCuyIA7mA91L85ybP4Z1uSn&s=cats')
+        .then(function(response) {
+            console.log(response.json());
+        });
+    </script>
+    
+</body>
+</html>
