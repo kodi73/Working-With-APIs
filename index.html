@@ -4,18 +4,146 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>API is gonna work for me!</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: #f4f6f8;
+        }
+
+        .app {
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            width: 360px;
+            text-align: center;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 8px;
+        }
+
+        input {
+            flex: 1;
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        button {
+            border: none;
+            border-radius: 6px;
+            background-color: #111;
+            padding: 8px 12px;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        h1 {
+            margin: 0, 0, 16px 0;
+            font-size: 20px;
+            font-weight: 600;
+            color: #222;
+        }
+
+        .img {
+            width: 100%;
+            border-radius: 6px;
+            background-color: #eaeaea;
+        }
+
+        button:hover {
+            background-color: #333;
+        }
+
+        button:active {
+            transform: scale(0.97);
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #111;
+        }
+
+        button:focus {
+            outline: none;
+        }
+
+        .status {
+            margin-top: 12px;
+            font-size: 14px;
+            color: #555;
+            min-height: 18px;
+        }
+    </style>
 </head>
 <body>
-    <img src="#" alt="My giphs">
+    <div class="app">
+        <h1>GIFs for your mood, or for a thing in your mind.</h1>
+        <img src="" alt="My Gifs" width="300">
+        <p id="status" class="status"></p>
+        <div class="controls">
+            <input type="text" id="searchGif" placeholder="Search GIF">
+            <button id="newGifBtn">New GIF</button>
+        </div>
+    </div>
     <script>
         const image = document.querySelector('img');
-        fetch('https://api.giphy.com/v1/gifs/translate?api_key=API_KEY&s=cats')
-        .then(function(response) {
-            return response.json();
-        })
-        .then(function(response) {
-            image.src = response.data.images.original.url;
+        const newGifBtn = document.getElementById('newGifBtn');
+        const searchQuery = document.getElementById('searchGif');
+        const statusText = document.querySelector("#status");
+
+        async function newGif() {
+            try {
+                statusText.textContent = "Loading GIF...";
+                newGifBtn.disabled = true;
+                const query = searchQuery.value.trim() || "cats";
+                const apiUrl = `https://api.giphy.com/v1/gifs/translate?api_key=YOUR_API_KEY_HERE&s=${query}`;
+                const response = await fetch(`${apiUrl}`);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP Error: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (!data.data || !data.data.images) {
+                    throw new Error("No GIF found");
+                }
+                image.src = data.data.images.original.url;
+                statusText.textContent = "";
+            }
+            catch (error) {
+                console.log(error);
+            }
+            finally {
+                newGifBtn.disabled = false;
+            }
+        }
+
+        newGif();
+
+        newGifBtn.addEventListener("click", newGif);
+
+        searchQuery.addEventListener("focus", () => {
+            searchQuery.select();
         });
+
+        searchQuery.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" && searchQuery.value.trim()) {
+                newGif();
+            }
+        });
+
     </script>
     
 </body>
